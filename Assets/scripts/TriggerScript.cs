@@ -15,7 +15,7 @@ public class TriggerScript : MonoBehaviour
         {
             Triggered?.Invoke();
             obstacle.SetActive(false);
-            Debug.Log("Hello brother!");
+            Debug.Log("КТО ТУТ!");
         }
     }
 
@@ -25,7 +25,7 @@ public class TriggerScript : MonoBehaviour
         if (other.TryGetComponent(typeof(PlayerMovement), out var playerComponent))
         {
             obstacle.SetActive(true);
-            Debug.Log("Bye brother!");
+            Debug.Log("Показалось!");
         }
     }
 }

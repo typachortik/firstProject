@@ -13,17 +13,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private float _heightThreshold;
     [SerializeField] private TextMeshProUGUI _deathCounter;
+    [SerializeField] private TextMeshProUGUI _pointsCounter;
     [SerializeField] private GameObject _loseWindow;
+
+    public event Action Triggered = delegate { };
 
 
     bool inAir;
 
     private int _lifeCount = 5;
+    private int _points = 0;
 
-    private void Awake()
-    {
-        _trigger.Triggered += SayHello;
-    }
 
     private void Update()
     {
@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         _lifeCount--;
         if (_lifeCount > 0)
         {
-            _deathCounter.text = $"Player Life: {_lifeCount}";
+            _deathCounter.text = $" {_lifeCount}";
             ResetPosition();
         }
         else
@@ -59,10 +59,21 @@ public class PlayerMovement : MonoBehaviour
 
     public void ResetGame()
     {
-        _deathCounter.text = $"Player Life: {_lifeCount}";
+        _deathCounter.text = $" {_lifeCount}";
         _loseWindow.SetActive(false);
         _lifeCount = 5;
         ResetPosition();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.TryGetComponent(typeof(PlayerMovement), out var playerComponent))
+        {
+            Triggered?.Invoke();
+            obstacle.SetActive(false);
+            _points++;
+            _pointsCounter.text = $" {_points}";
+        }
     }
 
     private void ResetPosition()
@@ -93,13 +104,4 @@ public class PlayerMovement : MonoBehaviour
         inAir = true;
     }
 
-    private void OnDestroy()
-    {
-        _trigger.Triggered -= SayHello;
-    }
-
-    private void SayHello()
-    {
-        Debug.Log("Player says hello");
-    }
 }
